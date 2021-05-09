@@ -115,7 +115,7 @@ class _FlightHomeAppState extends State<FlightHomeApp> {
         value: _check,
         onChanged: (valor) {
           setState(() {
-            _check = _check;
+            _check = valor;
           });
         },
       );
