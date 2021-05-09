@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'header_widget.dart';
-import 'switch.dart';
 
 void main() => runApp(MainFlightApp());
 
@@ -23,81 +22,161 @@ class FlightHomeApp extends StatefulWidget {
 }
 
 class _FlightHomeAppState extends State<FlightHomeApp> {
+  bool _check = false;
+  String _fecha = '';
+  //esta propiedad me va a servir para llenar la caja de texto con lo que tenga en _fecha
+  TextEditingController _inputFieldDateController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final headerHeight = MediaQuery.of(context).size.height * 0.32;
-    return Card(
-      color: Colors.transparent,
-      child: Scaffold(
-        body: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Positioned(
-              height: headerHeight,
-              left: 0,
-              right: 0,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: FractionalOffset.topCenter,
-                    end: FractionalOffset.bottomCenter,
-                    colors: [
-                      Colors.pinkAccent,
-                      Colors.purple,
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Positioned(
+            height: headerHeight,
+            left: 0,
+            right: 0,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: FractionalOffset.topCenter,
+                  end: FractionalOffset.bottomCenter,
+                  colors: [
+                    Colors.pinkAccent,
+                    Colors.purple,
+                  ],
+                  stops: [0.2, 0.6],
+                ),
+              ),
+            ),
+          ),
+          img(),
+          texto(),
+          Positioned(
+            left: 10,
+            right: 10,
+            top: headerHeight / 1.2,
+            bottom: 10,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      HeaderWidget(title: 'USER PROFILE'),
+                      Header(title: 'User Name'),
+                      CajaUser(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Header(title: 'Email Id'),
+                      CajaEmail(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Header(title: 'Mobile Number'),
+                      CajaMobile(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Header(title: 'Date of Birth'),
+                      CajaFecha(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Header(title: 'Sex'),
+                      _crearSwitchF(),
+                      _crearSwitchM(),
+                      button(),
                     ],
-                    stops: [0.2, 0.6],
                   ),
                 ),
               ),
             ),
-            img(),
-            texto(),
-            Positioned(
-              left: 10,
-              right: 10,
-              top: headerHeight / 1.2,
-              bottom: 10,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        HeaderWidget(title: 'USER PROFILE'),
-                        Header(title: 'User Name'),
-                        CajaUser(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Header(title: 'Email Id'),
-                        CajaEmail(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Header(title: 'Mobile Number'),
-                        CajaMobile(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Header(title: 'Date of Birth'),
-                        CajaDate(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Header(title: 'Sex'),
-                        switchFemale(),
-                        button(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  _crearSwitchF() => SwitchListTile(
+        title: Text('Female'),
+        value: _check,
+        onChanged: (valor) {
+          setState(() {
+            _check = valor;
+          });
+        },
+      );
+  _crearSwitchM() => SwitchListTile(
+        title: Text('Male'),
+        value: _check,
+        onChanged: (valor) {
+          setState(() {
+            _check = _check;
+          });
+        },
+      );
+
+  void changeSwitch() {
+    setState(() {
+      _check = _check == _crearSwitchM() ? _crearSwitchM() : _crearSwitchF();
+    });
+  }
+}
+
+class CajaFecha extends StatefulWidget {
+  const CajaFecha({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _CajaFechaState createState() => _CajaFechaState();
+}
+
+class _CajaFechaState extends State<CajaFecha> {
+  String date = "";
+  TextEditingController _txtController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      readOnly: true,
+      controller: _txtController,
+      decoration: InputDecoration(
+        prefixIcon: Icon(
+          Icons.calendar_today,
+          color: DeliveryColors.purple,
+        ),
+        labelText: 'DD / MM / YYYY',
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+      ),
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+        _selectDAte(context);
+      },
+      // onChanged: (valor) {
+      //   date = valor;
+      //   setState(() {
+      //     _selectDAte(context);
+      //   });
+      // },
+    );
+  }
+
+  void _selectDAte(BuildContext context) async {
+    DateTime dateP = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2022),
+      initialDate: DateTime.now(),
+    );
+    if (dateP != null) {
+      setState(() {});
+      date = dateP.toString();
+      _txtController.text = date;
+    }
   }
 }
 
@@ -141,14 +220,21 @@ Widget img() {
 
 Widget texto() {
   return Padding(
-    padding: const EdgeInsets.all(142.0),
+    padding: const EdgeInsets.symmetric(horizontal: 133, vertical: 159),
     child: Column(
       children: <Widget>[
-        Text(
-          'Lacey Fernandez',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          textAlign: TextAlign.center,
-        ),
+        Row(children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Panda",
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          iconEditar(),
+        ]),
       ],
     ),
   );
@@ -206,16 +292,29 @@ Widget button() {
   );
 }
 
-Widget switchFemale() {
-  return SwitchListTile(
-    value: true,
-    title: Text(
-      'Female',
-      style: TextStyle(
-        fontSize: 14,
+Widget iconEditar() {
+  return Positioned(
+    right: 0,
+    child: CupertinoButton(
+      padding: EdgeInsets.zero,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        child: Icon(
+          Icons.edit,
+          color: Colors.purple,
+        ),
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.white,
+            width: 0,
+          ),
+          color: Colors.white,
+          shape: BoxShape.circle,
+        ),
       ),
+      onPressed: () {},
     ),
-    onChanged: (val) {},
   );
 }
 
@@ -291,39 +390,10 @@ class _CajaMobileState extends State<CajaMobile> {
         child: TextField(
           decoration: InputDecoration(
               prefixIcon: Icon(
-                Icons.mobile_friendly_rounded,
+                Icons.phone_android,
                 color: DeliveryColors.purple,
               ),
               labelText: 'Enter your 10 digit mobile number',
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(30))),
-          onChanged: (valor) {
-            setState(() {});
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class CajaDate extends StatefulWidget {
-  @override
-  _CajaDateState createState() => _CajaDateState();
-}
-
-class _CajaDateState extends State<CajaDate> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-        child: TextField(
-          decoration: InputDecoration(
-              prefixIcon: Icon(
-                Icons.calendar_today,
-                color: DeliveryColors.purple,
-              ),
-              labelText: 'DD / MM / YYYY',
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(30))),
           onChanged: (valor) {
