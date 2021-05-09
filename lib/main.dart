@@ -103,6 +103,7 @@ class _FlightHomeAppState extends State<FlightHomeApp> {
 
   _crearSwitchF() => SwitchListTile(
         title: Text('Female'),
+        controlAffinity: ListTileControlAffinity.leading,
         value: _check,
         onChanged: (valor) {
           setState(() {
@@ -112,6 +113,7 @@ class _FlightHomeAppState extends State<FlightHomeApp> {
       );
   _crearSwitchM() => SwitchListTile(
         title: Text('Male'),
+        controlAffinity: ListTileControlAffinity.leading,
         value: _check,
         onChanged: (valor) {
           setState(() {
